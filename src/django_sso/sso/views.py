@@ -14,7 +14,7 @@ import json
 def index(request):
     if request.user.is_authenticated:
         return HttpResponse("Usuario Atenticado!")
-    return redirect(f"{settings.SSO_ENDPOINT}/&externo={settings.SSO_EXTERNO}")
+    return redirect(f"{settings.SSO_URL}/&externo={settings.SSO_EXTERNO}")
 
 
 def login(request):
@@ -45,7 +45,7 @@ def logout(request):
 
 def is_valid(username, secret):
     params = {"externo": settings.SSO_EXTERNO, "secret": secret, "username": username}
-    data = urlopen(f"{settings.SSO_ENDPOINT}/is_valid?{urlencode(params)}").read()
+    data = urlopen(f"{settings.SSO_URL}/is_valid?{urlencode(params)}").read()
     if data:
         data = json.loads(data)
         return data["valid"]
