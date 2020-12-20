@@ -1,6 +1,5 @@
-from django.http import HttpResponse, JsonResponse
-from django.shortcuts import redirect, render
-from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse
+from django.shortcuts import redirect
 from django.contrib.auth.models import User
 from django.contrib.auth import login as custom_login
 from django.contrib.auth import logout as custom_logout
@@ -20,7 +19,7 @@ def index(request):
 def login(request):
     if not request.GET["username"] or not request.GET["secret"]:
         print("*** error username o secret")
-        return redirect("sso/index")
+        return redirect("index")
 
     username = request.GET["username"]
     secret = request.GET["secret"]
@@ -35,12 +34,12 @@ def login(request):
         custom_login(request, user)
         return HttpResponse("Ha sido autenticado y tiene acceso a esta App.")
 
-    return redirect("sso/index")
+    return redirect("index")
 
 
 def logout(request):
     custom_logout(request)
-    return redirect("sso/index")
+    return redirect("index")
 
 
 def is_valid(username, secret):
