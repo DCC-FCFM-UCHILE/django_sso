@@ -14,7 +14,7 @@ import json
 def index(request):
     if request.user.is_authenticated:
         return HttpResponse("Usuario Atenticado!")
-    return redirect(f"{settings.SSO_URL}/&externo={settings.SSO_EXTERNO}")
+    return redirect(f"{settings.SSO_URL}?externo={settings.SSO_EXTERNO}")
 
 
 def login(request):
