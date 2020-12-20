@@ -12,7 +12,13 @@ import json
 
 def index(request):
     if request.user.is_authenticated:
-        return HttpResponse("Usuario Atenticado!")
+        next_url = "/"
+        if request.session["next"]:
+            next_url = request.session["next"]
+            del request.session["next"]
+        return redirect(next_url)
+
+    request.session["next"] = request.GET.get("next", "")
     return redirect(f"{settings.SSO_URL}?externo={settings.SSO_EXTERNO}")
 
 
