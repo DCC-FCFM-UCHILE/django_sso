@@ -1,6 +1,11 @@
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
+from django.shortcuts import render
+
 
 @login_required
 def index(request):
-    return HttpResponse("Usuario Atenticado!")
+    return render(request, "demo/authorized.html")
+
+
+def unauthorized(request):
+    return render(request, "demo/unauthorized.html")

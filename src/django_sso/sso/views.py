@@ -4,6 +4,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth import login as custom_login
 from django.contrib.auth import logout as custom_logout
 from django.conf import settings
+from django.contrib import messages
+
 
 from urllib.parse import urlencode
 from urllib.request import urlopen
@@ -24,7 +26,7 @@ def index(request):
 
 def login(request):
     if not request.GET["username"] or not request.GET["secret"]:
-        print("*** error username o secret")
+        messages.error(request, "No se pudo validar su sesión.")
         return redirect("index")
 
     username = request.GET["username"]
@@ -33,12 +35,12 @@ def login(request):
     if user_exists(username):
         user = User.objects.get(username=username)
     else:
-        return HttpResponse("Ha sido autenticado, pero no tiene acceso a esta App.")
-        print(f"*** error user no encontrado: username={username}")
+        messages.error(request, "Ha sido autenticado, pero no tiene acceso a esta App.")
+        return redirect(settings.UNAUTHORIZED_URL)
 
     if is_valid(username, secret):
         custom_login(request, user)
-        return HttpResponse("Ha sido autenticado y tiene acceso a esta App.")
+        return redirect(settings.AUTHORIZED_URL)
 
     return redirect("index")
 
