@@ -14,9 +14,9 @@ import json
 
 def index(request):
     if request.user.is_authenticated:
-        next_url = ""
-        # if request.META['SCRIPT_NAME']:
-        #    next_url = f"{request.META['SCRIPT_NAME']}/"
+        next_url = "/"
+        if request.META['SCRIPT_NAME']:
+            next_url = f"{request.META['SCRIPT_NAME']}/"
 
         if request.session["next"]:
             next_url += request.session["next"]
@@ -43,11 +43,9 @@ def login(request):
 
     if is_valid(username, secret):
         custom_login(request, user)
-        return redirect("")
-        # si lo de arriba funciona lo de abajo no es necesario
-        # if request.META['SCRIPT_NAME']:
-        #    return redirect(f"{request.META['SCRIPT_NAME']}/")
-        # return redirect("/")
+        if request.META['SCRIPT_NAME']:
+            return redirect(f"{request.META['SCRIPT_NAME']}/")
+        return redirect("/")
 
     return redirect("index")
 
