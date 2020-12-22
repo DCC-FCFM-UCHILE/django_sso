@@ -15,7 +15,7 @@ import json
 def index(request):
     if request.user.is_authenticated:
         next_url = "/"
-        if request.META['SCRIPT_NAME']:
+        if request.META["SCRIPT_NAME"]:
             next_url = f"{request.META['SCRIPT_NAME']}/"
 
         if request.session["next"]:
@@ -43,7 +43,7 @@ def login(request):
 
     if is_valid(username, secret):
         custom_login(request, user)
-        if request.META['SCRIPT_NAME']:
+        if request.META["SCRIPT_NAME"]:
             return redirect(f"{request.META['SCRIPT_NAME']}/")
         return redirect("/")
 
@@ -51,7 +51,7 @@ def login(request):
 
 
 def unauthorized(request):
-    return HttpResponse(unauthorized())
+    return HttpResponse(get_unauthorized_html())
 
 
 def logout(request):
@@ -74,7 +74,7 @@ def user_exists(username):
     return False
 
 
-def unauthorized():
+def get_unauthorized_html():
     return """
 <!doctype html>
 <html lang="es">
