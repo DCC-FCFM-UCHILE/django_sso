@@ -14,9 +14,12 @@ import json
 
 def index(request):
     if request.user.is_authenticated:
-        next_url = "/"
+        next_url = ""
+        # if request.META['SCRIPT_NAME']:
+        #    next_url = f"{request.META['SCRIPT_NAME']}/"
+
         if request.session["next"]:
-            next_url = request.session["next"]
+            next_url += request.session["next"]
             del request.session["next"]
         return redirect(next_url)
 
@@ -36,11 +39,15 @@ def login(request):
         user = User.objects.get(username=username)
     else:
         messages.error(request, "Ha sido autenticado, pero no tiene acceso a esta App.")
-        return redirect(settings.UNAUTHORIZED_URL)
+        return HttpResponse(unauthorized())
 
     if is_valid(username, secret):
         custom_login(request, user)
-        return redirect(settings.AUTHORIZED_URL)
+        return redirect("")
+        # si lo de arriba funciona lo de abajo no es necesario
+        # if request.META['SCRIPT_NAME']:
+        #    return redirect(f"{request.META['SCRIPT_NAME']}/")
+        # return redirect("/")
 
     return redirect("index")
 
@@ -63,3 +70,39 @@ def user_exists(username):
     if User.objects.filter(username=username):
         return True
     return False
+
+
+def unauthorized():
+    return """
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <title>Portal Servicios DCC</title>
+</head>
+<style>
+    body {background-color: #333; color: white;}
+    .logo {width: 215px; height: 110px; margin: 50px;}
+    .wrapper { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);}
+</style>
+<body>
+<div class="wrapper">
+    <center>
+        <img class="logo" src="https://w3.dcc.uchile.cl/static/web_frontend/images/logo_dcc.png">
+        <br />
+        <div class="alert alert-danger" role="alert">
+          Se ha autenticado correctamente pero no está autorizado para utilizar esta App.<br />
+          Contacte al Área de Desarrollo de Aplicaciones 
+          <a href="mailto:desarrollo@dcc.uchile.cl">desarrollo@dcc.uchile.cl</a> para solicitar acceso.
+        </div>
+    </center>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
+        crossorigin="anonymous"></script>
+</body>
+</html>    
+"""
