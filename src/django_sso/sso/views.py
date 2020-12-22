@@ -51,7 +51,7 @@ def login(request):
 
 
 def unauthorized(request):
-    return redirect(f"{request.META['SCRIPT_NAME']}/")
+    return HttpResponse(unauthorized())
 
 
 def logout(request):
