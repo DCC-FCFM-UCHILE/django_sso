@@ -39,12 +39,12 @@ def login(request):
         user = User.objects.get(username=username)
     else:
         messages.error(request, "Ha sido autenticado, pero no tiene acceso a esta App.")
-        return HttpResponse(unauthorized())
+        return redirect("unauthorized")
 
     if is_valid(username, secret):
         custom_login(request, user)
         if request.META['SCRIPT_NAME']:
-            return redirect("unauthorized")
+            return redirect(f"{request.META['SCRIPT_NAME']}/")
         return redirect("/")
 
     return redirect("index")
