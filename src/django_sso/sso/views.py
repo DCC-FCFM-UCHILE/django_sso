@@ -44,10 +44,14 @@ def login(request):
     if is_valid(username, secret):
         custom_login(request, user)
         if request.META['SCRIPT_NAME']:
-            return redirect(f"{request.META['SCRIPT_NAME']}/")
+            return redirect("unauthorized")
         return redirect("/")
 
     return redirect("index")
+
+
+def unauthorized(request):
+    return redirect(f"{request.META['SCRIPT_NAME']}/")
 
 
 def logout(request):
