@@ -127,5 +127,4 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static/django_sso")
 # DCC SSO
 SSO_EXTERNO = "django_sso"
 SSO_URL = "https://w3.dcc.uchile.cl/portal"
-LOGIN_URL = "sso/"
-
+LOGIN_URL = "sso:index"

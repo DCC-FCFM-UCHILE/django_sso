@@ -1,5 +1,6 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect
+from django.urls import reverse
 from django.contrib.auth.models import User
 from django.contrib.auth import login as custom_login
 from django.contrib.auth import logout as custom_logout
@@ -35,8 +36,10 @@ def login(request):
 
     if user_exists(username):
         user = User.objects.get(username=username)
+        if not user.is_active:
+            return HttpResponseRedirect(reverse("sso:unauthorized"))
     else:
-        return redirect("unauthorized")
+        return HttpResponseRedirect(reverse("sso:unauthorized"))
 
     if is_valid(username, secret):
         custom_login(request, user)
