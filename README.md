@@ -10,15 +10,15 @@ El App SSO provee un segundo mecanismo de autenticación para su proyecto. Funci
 
 Para integrar esta App en proyecto debe:
 
-- Solicitar al Área de Desarrollo de Aplicaciones <**desarrollo@dcc.uchile.cl**> la creación de su externo indicando:
+- Solicitar al Área de Desarrollo de Aplicaciones <**desarrollo@dcc.uchile.cl**> la creación de su app indicando:
 
 ```dotenv
-Externo: (nombre del externo)
+Nombre: (nombre de la app)
 Descripción: (descripción corta de la aplicación, será mostrada a los usuarios en el portal)
 Endpoint: https://<url o ip>/sso/login
 Responsable: (nombre de la persona responsable del proyecto)
-Email: (debe proveer un correo @dcc.uchile.cl)
-Ambiente: (desarrollo, producción o testing)
+Email: (debe proveer un correo @*.uchile.cl)
+Ambiente: (desarrollo, pruebas, staging, producción)
 ```
 
 - [Clonar](https://github.com/DCC-FCFM-UCHILE/django_sso/tree/main) la última versión de la rama main este repositorio
@@ -38,12 +38,13 @@ INSTALLED_APPS = [
 ]
 ```
 
-- Incluir las siguientes configuraciones en el archivo _settings.py_, reemplazando "externo" por el identificador de su externo
+- Incluir las siguientes configuraciones en el archivo _settings.py_, reemplazando "identificador_app" por el identificador de su App.
 
 ```python
 # settings.py (proyecto)
-SSO_EXTERNO = "identificador_del_externo"
+SSO_APP = "identificador_app"
 SSO_URL = "https://w3.dcc.uchile.cl/portal"
+
 LOGIN_URL = "sso:index"
 ```
 

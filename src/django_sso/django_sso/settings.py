@@ -128,3 +128,5 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static/django_sso")
 SSO_EXTERNO = "django_sso"
 SSO_URL = "https://w3.dcc.uchile.cl/portal"
 LOGIN_URL = "sso:index"
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

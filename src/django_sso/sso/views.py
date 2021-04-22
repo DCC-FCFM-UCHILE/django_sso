@@ -23,7 +23,7 @@ def index(request):
         return redirect(next_url)
 
     request.session["next"] = request.GET.get("next", "")
-    return redirect(f"{settings.SSO_URL}?externo={settings.SSO_EXTERNO}")
+    return redirect(f"{settings.SSO_URL}?app={settings.SSO_APP}")
 
 
 def login(request):
@@ -60,7 +60,7 @@ def logout(request):
 
 
 def is_valid(username, secret):
-    params = {"externo": settings.SSO_EXTERNO, "secret": secret, "username": username}
+    params = {"app": settings.SSO_APP, "secret": secret, "username": username}
     data = urlopen(f"{settings.SSO_URL}/is_valid?{urlencode(params)}").read()
     if data:
         data = json.loads(data)
