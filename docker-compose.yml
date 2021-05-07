@@ -1,0 +1,49 @@
+version: "3.9"
+
+services:
+    django:
+        build: ./
+        command: python manage.py runserver 0.0.0.0:8000
+        volumes:
+            - ./app/:/usr/src/app/
+            - ./data/logs:/Apps/logs/django_sso
+        ports:
+            - "8000:8000"
+        restart: always
+        env_file:
+            - ./.env-desarrollo
+        depends_on:
+            mariadb:
+                condition: service_healthy
+    mariadb:
+        image: mariadb:10.6.0-focal
+        ports: 
+            - "3306:3306"
+        restart: always
+        volumes:
+            - ./data/mariadb/:/var/lib/mysql
+        environment:
+            MYSQL_USER: desarrollo
+            MYSQL_PASSWORD: desarroll0
+            MYSQL_DATABASE: django_sso
+            MYSQL_RANDOM_ROOT_PASSWORD: 1
+        healthcheck:
+            test: ["CMD-SHELL", "mysqladmin status -udesarrollo -pdesarroll0"]
+            interval: 5s
+            timeout: 5s
+            retries: 5
+    phpmyadmin:
+        image: phpmyadmin
+        environment: 
+            PMA_HOST: mariadb
+            PMA_PORT: 3306
+            PMA_USER: desarrollo
+            PMA_PASSWORD: desarroll0
+        ports:
+            - "8080:80"
+        links:
+            - mariadb
+        restart: always
+        depends_on:
+            mariadb:
+                condition: service_healthy

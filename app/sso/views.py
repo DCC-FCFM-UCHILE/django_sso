@@ -1,0 +1,125 @@
+from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import redirect
+from django.urls import reverse
+from django.contrib.auth.models import User
+from django.contrib.auth import login as custom_login
+from django.contrib.auth import logout as custom_logout
+from django.conf import settings
+
+from urllib.parse import urlencode
+from urllib.request import urlopen
+import json
+
+from sso.utils import log, error
+
+def index(request):
+    if request.user.is_authenticated:
+        if request.META["SCRIPT_NAME"]:
+            return redirect(f"{r.META['SCRIPT_NAME']}/")
+        return redirect("/")
+    return redirect(f"{settings.SSO_URL}?app={settings.SSO_APP}")
+
+
+def login(request):
+    if not request.GET["username"] or not request.GET["secret"]:
+        # TODO: crear un template para este error
+        return HttpResponseRedirect(reverse("sso:index"))
+
+    username = request.GET["username"]
+    secret = request.GET["secret"]
+
+    ldata = {}
+    ldata["username"] = username
+    ldata["secret"] = secret
+
+    user = get_user(username, secret)
+    if not user:
+        # TODO: crear un template para este error
+        error("error al inicializar el usuario", ldata)
+        return HttpResponseRedirect(reverse("sso:index"))
+    
+    ldata["username"] = user.username
+    if not user.is_active:
+        ldata["user"] = user
+        log("usuario encontrado pero no activo", ldata)
+        return HttpResponseRedirect(reverse("sso:unauthorized"))
+
+    log("usuario autenticado y autorizado", ldata)
+    custom_login(request, user)
+    return HttpResponseRedirect(reverse("sso:index"))
+
+
+def logout(request):
+    custom_logout(request)
+    return HttpResponseRedirect(reverse("sso:index"))
+
+
+def unauthorized(request):
+    html = """
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <title>Portal Servicios DCC</title>
+</head>
+<style>
+    body {background-color: #333; color: white;}
+    .logo {width: 215px; height: 110px; margin: 50px;}
+    .wrapper { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);}
+</style>
+<body>
+<div class="wrapper">
+    <center>
+        <img class="logo" src="https://w3.dcc.uchile.cl/static/web_frontend/images/logo_dcc.png">
+        <br />
+        <div class="alert alert-danger" role="alert">
+          Se ha autenticado correctamente pero no está autorizado para utilizar esta App.<br />
+          Contacte al Área de Desarrollo de Aplicaciones 
+          (<a href="mailto:desarrollo@dcc.uchile.cl">desarrollo@dcc.uchile.cl</a>) para solicitar acceso.
+        </div>
+    </center>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
+        crossorigin="anonymous"></script>
+</body>
+</html>    
+"""
+    return HttpResponse(html)
+
+
+# FUNCIONES
+def get_user(username, secret):
+    user = User.objects.filter(username=username).first()
+    if not user:
+        data = get_data(username, secret)
+        if data["valid"]:
+            user = User.objects.create_user(
+                username=data["username"],
+                email=data["email"],
+                first_name=f"{data['first_name']}",
+                last_name=f"{data['last_name']}",
+                is_active=settings.SSO_AUTH,
+            )
+    return user
+
+
+def get_data(username, secret):
+    data["valid"] = False
+
+    params = {"app": settings.SSO_APP, "secret": secret, "username": username}
+    url = f"{settings.SSO_URL}/is_valid?{urlencode(params)}"
+
+    ldata = {}
+    ldata["url"] = url
+
+    try:
+        data = json.loads(urlopen(url).read())
+    except Exception:
+        error("error al intentar obtener data del usuario desde el portal", ldata)
+        pass
+    
+    return data
