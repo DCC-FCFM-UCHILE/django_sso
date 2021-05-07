@@ -2,9 +2,11 @@
 
 ## Descripción
 
+Este proyecto provee un ejemplo para las Apps basadas en Django para integrarse con el Portal DCC, aplicación que provee autenticación utilizando cuenta Mi Uchile mediante el uso de Upasaporte del Centro Ucampus.
+
 ## Características
 
-El App SSO provee un segundo mecanismo de autenticación para su proyecto. Funciona en ambientes de desarrollo que expongan de forma pública el endpoint `https://<url||ip>/sso/login`, el cual es utilizado para comunicarse con el **Portal DCC**.
+El App **SSO** (`_django_sso/app/sso_`) en este proyecto provee un segundo mecanismo de autenticación para su proyecto. Funciona exponiendo el endpoint `https://<url||ip>/sso/login`, el cual es utilizado para comunicarse con el [**Portal DCC**](https://apps.dcc.uchile.cl/portal).
 
 ## Integración
 
@@ -14,16 +16,21 @@ Para integrar esta App en proyecto debe:
 
 ```dotenv
 Nombre: (nombre de la app)
-Descripción: (descripción corta de la aplicación, será mostrada a los usuarios en el portal)
+Descripción: (descripción corta de la aplicación, será mostrada a los usuarios en el Portal)
 Endpoint: https://<url o ip>/sso/login
 Responsable: (nombre de la persona responsable del proyecto)
 Email: (debe proveer un correo @*.uchile.cl)
-Ambiente: (desarrollo, pruebas, staging, producción)
+Ambiente: (desarrollo, produccion, localhost)
 ```
 
-- [Clonar](https://github.com/DCC-FCFM-UCHILE/django_sso/tree/main) la última versión de la rama main este repositorio
-- Crear un link simbólico en su directorio de _apps_ al directorio `_django_sso/src/django_sso/sso_` (este link simbólico no debería ser versionado; se recomienda agregarlo al archivo _.gitignore_)
-- Agregar la app en *INSTALLED_APPS* en el archivo _settings.py_
+Tiene varias opciones para utilizar la App SSO incluida en este proyecto:
+
+- Puede crear una App basándose en el código de fuente de la misma.
+- Puede copiar el código de la App a su proyecto.
+
+No obstante, debido a que este es un proyecto que está en constante mejora se recomienda incluir este proyecto como un submodulo en su repositorio, asegurándose que siempre apunte a la última versión de la rama **main** y crear un link simbólico de la App SSO a su proyecto Django.
+
+Si utiliza la App, como es provista, debe incluir las siguientes configuraciones en su proyecto Django:
 
 ```python
 # settings.py (proyecto)
@@ -42,11 +49,15 @@ INSTALLED_APPS = [
 
 ```python
 # settings.py (proyecto)
-SSO_APP = "identificador_app"
-SSO_URL = "https://w3.dcc.uchile.cl/portal"
 
+# DCC SSO
 LOGIN_URL = "sso:index"
+SSO_URL = "https://apps.dcc.uchile.cl/portal"
+SSO_APP = <IDENTIFICADOR_APP>
+SSO_AUTH = <True|False>
 ```
+
+Si SSO_AUTH = True, la App se basará en el mecanismo de autorización provisto por el Portal para las Apps. Si desea controlar la autorización en su App, setee SSO_AUTH = False. 
 
 - Configurar archivo _urls.py_ para agregar rutas del sso
 
@@ -57,3 +68,16 @@ urlpatterns = [
     path("sso/", include("sso.urls")),
 ]
 ```
+
+## Consideraciones
+
+Este proyecto se encuentra configurado con Docker para levantar un ambiente local de desarrollo. El portal es compatible para trabajar con Apps que funcionen en localhost, para más información contacte al Área de Desarrollo del DCC.
+
+
+```ps
+docker-compose up -d --build
+docker-compose exec django python manage.py migrate
+docker-compose exec django python manage.py createsuperuser
+```
+
+**NO SE RECOMIENDA UTILIZAR ESTE PROYECTO COMO BASE PARA CONSTRUIR SU APP.** Solicite documentación al Área de Desarrollo del DCC sobre como iniciar un nuevo proyecto Django que sea compatible con los ambientes de desarrollo y productivos del DCC.
