@@ -12,6 +12,7 @@ import json
 
 from sso.utils import log, error
 
+
 def index(request):
     if request.user.is_authenticated:
         if request.META["SCRIPT_NAME"]:
@@ -35,7 +36,7 @@ def login(request):
         # TODO: crear un template para este error
         error("error al inicializar el usuario", ldata)
         return HttpResponseRedirect(reverse("sso:index"))
-    
+
     ldata["username"] = user.username
     if not user.is_active:
         ldata["user"] = user
