@@ -50,7 +50,7 @@ def login(request):
 
 def logout(request):
     custom_logout(request)
-    return HttpResponseRedirect(reverse("sso:index"))
+    return redirect("https://apps.dcc.uchile.cl")
 
 
 def unauthorized(request):
