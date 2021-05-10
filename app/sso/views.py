@@ -28,9 +28,7 @@ def login(request):
     username = request.GET["username"]
     secret = request.GET["secret"]
 
-    ldata = {}
-    ldata["username"] = username
-    ldata["secret"] = secret
+    ldata = {"username": username, "secret": secret}
 
     user = get_user(username, secret)
     if not user:
@@ -108,18 +106,16 @@ def get_user(username, secret):
 
 
 def get_data(username, secret):
-    data["valid"] = False
+    data = {"valid": False}
 
     params = {"app": settings.SSO_APP, "secret": secret, "username": username}
     url = f"{settings.SSO_URL}/is_valid?{urlencode(params)}"
 
-    ldata = {}
-    ldata["url"] = url
-
+    ldata = {"url": url}
     try:
         data = json.loads(urlopen(url).read())
     except Exception:
         error("error al intentar obtener data del usuario desde el portal", ldata)
-        pass
-    
+    log("data de usuario obtenida desde el portal", ldata)
+
     return data
