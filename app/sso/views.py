@@ -16,7 +16,7 @@ from sso.utils import log, error
 def index(request):
     if request.user.is_authenticated:
         if request.META["SCRIPT_NAME"]:
-            return redirect(f"{r.META['SCRIPT_NAME']}/")
+            return redirect(f"{request.META['SCRIPT_NAME']}/")
         return redirect("/")
     return redirect(f"{settings.SSO_URL}?app={settings.SSO_APP}")
 
