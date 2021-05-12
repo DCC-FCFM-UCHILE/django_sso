@@ -22,14 +22,18 @@ def index(request):
 
 
 def login(request):
-    if not request.GET["username"] or not request.GET["secret"]:
+    ip_address = request.META.get("HTTP_X_FORWARDED_FOR", "0xL").split(", ")[0]
+    username = request.GET.get("username", None)
+    secret = request.GET.get("secret", None)
+
+    ldata = {"ip_address": ip_address, "username": username, "secret": secret}
+
+    if not username or not secret:
         # TODO: crear un template para este error
+        error("usuario o secret no especificado", ldata)
         return HttpResponseRedirect(reverse("sso:index"))
 
-    username = request.GET["username"]
-    secret = request.GET["secret"]
-
-    ldata = {"username": username, "secret": secret}
+    
 
     user = get_user(username, secret)
     if not user:
@@ -49,6 +53,17 @@ def login(request):
 
 
 def logout(request):
+    username = None
+    if request.user.is_authenticated:
+        username = request.user.username
+    ip_address = request.META.get("HTTP_X_FORWARDED_FOR", "0xL").split(", ")[0]
+    ldata = {"ip_address": ip_address, "username": request.user.username}
+
+    if not username:
+        error("intenta logout sin estar logeado", ldata)
+    else:
+        log("logout usuario", ldata)
+    
     custom_logout(request)
     return redirect("https://apps.dcc.uchile.cl")
 
