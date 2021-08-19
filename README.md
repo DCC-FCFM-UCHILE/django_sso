@@ -52,7 +52,7 @@ INSTALLED_APPS = [
 
 # DCC SSO
 LOGIN_URL = "sso:index"
-SSO_URL = "https://apps.dcc.uchile.cl/portal"
+SSO_URL = "https://portal.dcc.uchile.cl/"
 SSO_APP = <IDENTIFICADOR_APP>
 SSO_AUTH = <True|False>
 ```
