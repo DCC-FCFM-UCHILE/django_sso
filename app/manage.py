@@ -3,11 +3,6 @@
 import os
 import sys
 
-from dotenv import load_dotenv, find_dotenv
-
-load_dotenv(find_dotenv())
-
-
 def main():
     """Run administrative tasks."""
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "django_sso.settings")

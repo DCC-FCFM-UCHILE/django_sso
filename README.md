@@ -53,8 +53,8 @@ INSTALLED_APPS = [
 # DCC SSO
 LOGIN_URL = "sso:index"
 SSO_URL = "https://portal.dcc.uchile.cl/"
-SSO_APP = <IDENTIFICADOR_APP>
-SSO_AUTH = <True|False>
+SSO_APP = "django_sso"
+SSO_AUTH = True
 ```
 
 Si SSO_AUTH = True, la App se basará en el mecanismo de autorización provisto por el Portal para las Apps. Si desea controlar la autorización en su App, setee SSO_AUTH = False. 

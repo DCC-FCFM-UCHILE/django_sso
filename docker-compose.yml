@@ -2,48 +2,37 @@ version: "3.9"
 
 services:
     django:
-        build: ./
+        build: 
+            context: .
+            dockerfile: ./.docker/app/Dockerfile
         command: python manage.py runserver 0.0.0.0:8000
         volumes:
-            - ./app/:/usr/src/app/
-            - ./data/logs:/Apps/logs/django_sso
+            - ./app/:/usr/src/app/:rw
+            - ./data/static/:/static/:rw
+            - ./data/media/:/media/:rw
+            - ./data/logs:/logs:rw
         ports:
-            - "8000:8000"
+            - 8000:8000
         restart: always
         env_file:
-            - ./.env-desarrollo
+            - ./.docker/app/.env
         depends_on:
-            mariadb:
+            postgresql:
                 condition: service_healthy
-    mariadb:
-        image: mariadb:10.6.0-focal
-        ports: 
-            - "3306:3306"
-        restart: always
+
+    postgresql:
+        image: postgres:13.3
+        expose:
+            - 5432
+        restart: on-failure
         volumes:
-            - ./data/mariadb/:/var/lib/mysql
-        environment:
-            MYSQL_USER: desarrollo
-            MYSQL_PASSWORD: desarroll0
-            MYSQL_DATABASE: django_sso
-            MYSQL_RANDOM_ROOT_PASSWORD: 1
+            - ./data/postgres/:/var/lib/postgresql:rw
+        environment: 
+            POSTGRES_USER: desarrollo
+            POSTGRES_PASSWORD: desarroll0
+            POSTGRES_DB: pgdevdb
         healthcheck:
-            test: ["CMD-SHELL", "mysqladmin status -udesarrollo -pdesarroll0"]
-            interval: 5s
+            test: ["CMD-SHELL", "pg_isready -U desarrollo -d pgdevdb"]
+            interval: 10s
             timeout: 5s
             retries: 5
-    phpmyadmin:
-        image: phpmyadmin
-        environment: 
-            PMA_HOST: mariadb
-            PMA_PORT: 3306
-            PMA_USER: desarrollo
-            PMA_PASSWORD: desarroll0
-        ports:
-            - "8080:80"
-        links:
-            - mariadb
-        restart: always
-        depends_on:
-            mariadb:
-                condition: service_healthy
