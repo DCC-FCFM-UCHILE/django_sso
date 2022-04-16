@@ -106,28 +106,6 @@ SERVER_EMAIL = get_env_variable("DJANGO_SERVER_EMAIL")
 
 BASE_URL = get_env_variable("DJANGO_BASE_URL")
 
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "handlers": {
-        "file": {
-            "level": os.environ.get("DJANGO_LOG_LEVEL"),
-            "class": "logging.FileHandler",
-            "filename": os.environ.get("DJANGO_LOG_FILENAME"),
-        },
-        "console": {
-            "class": "logging.StreamHandler",
-        },
-    },
-    "loggers": {
-        "django": {
-            "handlers": ["file"],
-            "level": os.environ.get("DJANGO_LOG_LEVEL"),
-            "propagate": True,
-        },
-    },
-}
-
 # DCC SSO
 LOGIN_URL = get_env_variable("DJANGO_LOGIN_URL")
 SSO_URL = get_env_variable("DJANGO_SSO_URL")

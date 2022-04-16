@@ -129,9 +129,7 @@ def get_data(username, secret):
     try:
         data = json.loads(urlopen(url).read())
     except Exception:
-        error(
-            "error al intentar obtener data del usuario desde el portal", ldata
-        )
+        error("error al intentar obtener data del usuario desde el portal", ldata)
     log("data de usuario obtenida desde el portal", ldata)
 
     return data
