@@ -18,6 +18,8 @@ def index(request):
         if request.META["SCRIPT_NAME"]:
             return redirect(f"{request.META['SCRIPT_NAME']}/")
         return redirect("/")
+    if settings.SSO_APP_URL:
+        return redirect(f"{settings.SSO_URL}?app={settings.SSO_APP}&url={settings.SSO_APP_URL}")
     return redirect(f"{settings.SSO_URL}?app={settings.SSO_APP}")
 
 
@@ -89,7 +91,7 @@ def unauthorized(request):
         <br />
         <div class="alert alert-danger" role="alert">
           Se ha autenticado correctamente pero no está autorizado para utilizar esta App.<br />
-          Contacte al Área de Desarrollo de Aplicaciones 
+          Contacte al Área de Desarrollo de Aplicaciones
           (<a href="mailto:desarrollo@dcc.uchile.cl">desarrollo@dcc.uchile.cl</a>) para solicitar acceso.
         </div>
     </center>
@@ -98,7 +100,7 @@ def unauthorized(request):
         integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
         crossorigin="anonymous"></script>
 </body>
-</html>    
+</html>
 """
     return HttpResponse(html)
 
