@@ -18,7 +18,7 @@ def index(request):
         if request.META["SCRIPT_NAME"]:
             return redirect(f"{request.META['SCRIPT_NAME']}/")
         return redirect("/")
-    if settings.is_defined("SSO_APP_URL"):
+    if hasattr(settings, "SSO_APP_URL"):
         return redirect(f"{settings.SSO_URL}?app={settings.SSO_APP}&url={settings.SSO_APP_URL}")
     return redirect(f"{settings.SSO_URL}?app={settings.SSO_APP}")
 
