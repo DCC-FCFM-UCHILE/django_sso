@@ -25,10 +25,12 @@ Ambiente: (desarrollo, produccion, localhost)
 
 Tiene varias opciones para utilizar la App SSO incluida en este proyecto:
 
-- Puede crear una App basándose en el código de fuente de la misma.
-- Puede copiar el código de la App a su proyecto.
+- ~~Puede crear una App basándose en el código de fuente de la misma~~.
+- ~~Puede copiar el código de la App a su proyecto~~.
+- Puede agregar este proyecto como submódulo a su proyecto.
 
-No obstante, debido a que este es un proyecto que está en constante mejora se recomienda incluir este proyecto como un submodulo en su repositorio, asegurándose que siempre apunte a la última versión de la rama **main** y crear un link simbólico de la App SSO a su proyecto Django.
+Debido a que este es un proyecto que está en constante mejora se recomienda incluir este proyecto como un submodulo en su repositorio, asegurándose que siempre apunte a la última versión de la rama **main** y crear un link simbólico de la App SSO a su proyecto Django.  Puede ver un ejemplo de esto en [Django Boilerplate](https://github.com/DCC-FCFM-UCHILE/django-boilerplate).
+
 
 Si utiliza la App, como es provista, debe incluir las siguientes configuraciones en su proyecto Django:
 
@@ -51,10 +53,10 @@ INSTALLED_APPS = [
 # settings.py (proyecto)
 
 # DCC SSO
-LOGIN_URL = "sso:index"
-SSO_URL = "https://portal.dcc.uchile.cl/"
-SSO_APP = "django_sso"
-SSO_AUTH = True
+LOGIN_URL=sso:index
+SSO_URL=https://portal.dcc.uchile.cl/
+SSO_APP=django_sso
+SSO_AUTH=True
 ```
 
 Si SSO_AUTH = True, la App se basará en el mecanismo de autorización provisto por el Portal para las Apps. Si desea controlar la autorización en su App, setee SSO_AUTH = False. 
@@ -71,8 +73,7 @@ urlpatterns = [
 
 ## Consideraciones
 
-Este proyecto se encuentra configurado con Docker para levantar un ambiente local de desarrollo. El portal es compatible para trabajar con Apps que funcionen en localhost, para más información contacte al Área de Desarrollo del DCC.
-
+Este proyecto se encuentra configurado con Docker para levantar un ambiente local de desarrollo. El portal es compatible para trabajar con Apps que funcionen en localhost, para más información contacte al Área de Desarrollo del DCC. También puede revisar este proyecto utilizando [GitPod](https://gitpod.io)
 
 ```ps
 docker-compose up -d --build
@@ -80,4 +81,6 @@ docker-compose exec django python manage.py migrate
 docker-compose exec django python manage.py createsuperuser
 ```
 
-**NO SE RECOMIENDA UTILIZAR ESTE PROYECTO COMO BASE PARA CONSTRUIR SU APP.** Solicite documentación al Área de Desarrollo del DCC sobre como iniciar un nuevo proyecto Django que sea compatible con los ambientes de desarrollo y productivos del DCC.
+**NO SE RECOMIENDA UTILIZAR ESTE PROYECTO COMO BASE PARA CONSTRUIR SU APP.** Solicite documentación al Área de Desarrollo del DCC sobre como iniciar un nuevo proyecto Django que sea compatible con los ambientes de desarrollo y productivos del DCC. 
+
+Puede utilizar el [Django Boilerplate](https://github.com/DCC-FCFM-UCHILE/django-boilerplate) como referencia o base para construir un nuevo proyecto.

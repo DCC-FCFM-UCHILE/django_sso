@@ -130,3 +130,6 @@ dmypy.json
 
 # Docker data
 data/
+
+.gitpod/env.sh
+app/core/settings/gitpod-tmp.py
