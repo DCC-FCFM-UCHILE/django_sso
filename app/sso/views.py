@@ -89,7 +89,7 @@ def unauthorized(request):
 <body>
 <div class="wrapper">
     <center>
-        <img class="logo" src="https://w3.dcc.uchile.cl/static/web_frontend/images/logo_dcc.png">
+        <img class="logo" src="https://w3.dcc.uchile.cl/static/images/logo.svg">
         <br />
         <div class="alert alert-danger" role="alert">
           Se ha autenticado correctamente pero no está autorizado para utilizar esta App.<br />
