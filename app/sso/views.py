@@ -45,7 +45,7 @@ def login(request):
 
     ldata["username"] = user.username
     if not user.is_active:
-        ldata["user"] = user
+        ldata["user"] = user.username
         log("usuario encontrado pero no activo", ldata)
         return HttpResponseRedirect(reverse("sso:unauthorized"))
 
