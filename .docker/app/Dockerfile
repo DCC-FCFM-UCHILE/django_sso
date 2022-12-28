@@ -1,4 +1,4 @@
-FROM python:3.8.12-slim-bullseye
+FROM python:3.8.13-slim-bullseye
 WORKDIR /usr/src/app
 
 ENV PYTHONDONTWRITEBYTECODE 1
