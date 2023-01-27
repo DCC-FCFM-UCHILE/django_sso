@@ -67,7 +67,9 @@ def logout(request):
         log("logout usuario", ldata)
 
     custom_logout(request)
-    return redirect("https://apps.dcc.uchile.cl")
+    if settings.SSO_LOGOUT_URL:
+        return redirect(reverse(settings.SSO_LOGOUT_URL))
+    return redirect("https://portal.dcc.uchile.cl")
 
 
 def unauthorized(request):
