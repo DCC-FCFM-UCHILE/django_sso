@@ -18,6 +18,8 @@ from sso.utils import log, error
 def index(request):
     if request.user.is_authenticated:
         if request.META["SCRIPT_NAME"]:
+            if settings.SSO_LOGIN_URL:
+                return redirect(reverse(settings.SSO_LOGIN_URL))
             return redirect(f"{request.META['SCRIPT_NAME']}/")
         return redirect("/")
     if hasattr(settings, "SSO_APP_URL"):
