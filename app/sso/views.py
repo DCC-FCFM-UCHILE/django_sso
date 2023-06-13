@@ -18,11 +18,13 @@ from sso.utils import log, error
 def index(request):
     if request.user.is_authenticated:
         if request.META["SCRIPT_NAME"]:
-            if settings.SSO_LOGIN_URL:
-                return redirect(reverse(settings.SSO_LOGIN_URL))
+            if hasattr(settings, "SSO_LOGIN_VIEW") and settings.SSO_LOGIN_VIEW:
+                return redirect(reverse(settings.SSO_LOGIN_VIEW))
+            elif hasattr(settings, "SSO_LOGIN_URL") and settings.SSO_LOGIN_URL:
+                return redirect(settings.SSO_LOGIN_URL)
             return redirect(f"{request.META['SCRIPT_NAME']}/")
         return redirect("/")
-    if hasattr(settings, "SSO_APP_URL"):
+    if hasattr(settings, "SSO_APP_URL") and settings.SSO_APP_URL:
         return redirect(f"{settings.SSO_URL}?app={settings.SSO_APP}&url={settings.SSO_APP_URL}")
     return redirect(f"{settings.SSO_URL}?app={settings.SSO_APP}")
 
@@ -69,8 +71,10 @@ def logout(request):
         log("logout usuario", ldata)
 
     custom_logout(request)
-    if settings.SSO_LOGOUT_URL:
-        return redirect(reverse(settings.SSO_LOGOUT_URL))
+    if hasattr(settings, "SSO_LOGOUT_VIEW") and settings.SSO_LOGOUT_VIEW:
+        return redirect(reverse(settings.SSO_LOGOUT_VIEW))
+    elif hasattr(settings, "SSO_LOGOUT_URL") and settings.SSO_LOGOUT_URL:
+        return redirect(settings.SSO_LOGOUT_URL)
     return redirect("https://portal.dcc.uchile.cl")
 
 
